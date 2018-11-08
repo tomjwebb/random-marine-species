@@ -33,3 +33,27 @@ Run it like this:
 rand_sp <- get_rand_sp()
 browseURL(url = rand_sp$url)
 ```
+Problem with this is it selects a group at each level at random, but this is not weighted by the number of species in this group - e.g. at level 1, Animalia and Fungi have the same change of being accepted, despite very different total numbers of species in WoRMS. Alternative brute force approach is to select an Aphia ID as a random integer from within the range of known Aphia IDs, as in this function:
+```R
+get_rand_sp2 <- function(){
+  # generate feasible aphia ID to try
+  gottit <- FALSE
+  while(gottit == FALSE){
+    df <- numeric()
+    class(df) <- "try-error"
+    while("try-error" %in% class(df)){
+      id <- as.integer(runif(1, 10000, 1300000))
+      df <- try(wm_record(id), silent = TRUE)
+      }
+    if(identical(df$AphiaID, df$valid_AphiaID) & identical(df$rank, "Species")){
+  	  gottit <- TRUE
+    }
+  }
+  df
+}
+```
+Run it like this:
+```R
+rand_sp <- get_rand_sp2()
+browseURL(url = rand_sp$url)
+```
