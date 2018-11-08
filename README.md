@@ -23,7 +23,7 @@ get_rand_sp <- function(){
       break
   	}
     }
-    df <- sample_n(df, 1)
+    df <- df %>% filter(rank == "Species") %>% sample_n(1)
     df_rec <- wm_record(df$valid_AphiaID)
     df_rec
 }
